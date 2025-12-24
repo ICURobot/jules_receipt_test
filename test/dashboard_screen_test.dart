@@ -14,8 +14,9 @@ void main() {
     expect(find.text('\$1,234.56'), findsOneWidget);
 
     // Verify "Scan Receipt" FAB is present
-    expect(find.text('Scan Receipt'), findsOneWidget);
+    // expect(find.text('Scan Receipt'), findsOneWidget); // Removed label
     expect(find.byType(FloatingActionButton), findsOneWidget);
+    expect(find.byIcon(Icons.qr_code_scanner), findsOneWidget);
 
     // Verify "Recent Transactions" header is present
     expect(find.text('Recent Transactions'), findsOneWidget);
