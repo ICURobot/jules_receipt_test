@@ -10,9 +10,12 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
   String _selectedFilter = 'All';
-  final _emeraldGreen = const Color(0xFF50C878);
-  final _backgroundColor = const Color(0xFF121212);
-  final _cardColor = const Color(0xFF1E1E1E);
+
+  // Design Colors
+  final _primaryColor = const Color(0xFF0DF2B5);
+  final _backgroundColor = const Color(0xFF10221D);
+  final _surfaceDark = const Color(0xFF1A3832);
+  final _secondaryText = const Color(0xFF90CBBB);
 
   void _onItemTapped(int index) {
     setState(() {
@@ -24,127 +27,159 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _backgroundColor,
-      appBar: AppBar(
-        title: const Text('Dashboard', style: TextStyle(color: Colors.white)),
-        backgroundColor: _backgroundColor,
-        elevation: 0,
-      ),
-      floatingActionButton: SizedBox(
-        width: 70,
-        height: 70,
-        child: FloatingActionButton(
-          onPressed: () {
-            // Scan receipt action
-          },
-          backgroundColor: _emeraldGreen,
-          shape: const CircleBorder(),
-          child: const Icon(Icons.qr_code_scanner, color: Colors.white, size: 32),
-        ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Total Spending Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(24.0),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFF0F392B),
-                    Colors.black,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0), // p-6 in Tailwind is usually 1.5rem (24px)
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Hero Card: Monthly Spending
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24.0),
+                decoration: BoxDecoration(
+                  color: _surfaceDark,
+                  borderRadius: BorderRadius.circular(16.0), // rounded-2xl
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color.fromRGBO(13, 242, 181, 0.15),
+                      blurRadius: 20,
+                      spreadRadius: 0,
+                    ),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(24.0),
-                border: Border.all(color: Colors.white10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Total Spending',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16.0,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Total Spending (October)',
+                      style: TextStyle(
+                        color: _secondaryText,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    '\$1,234.56',
-                    style: TextStyle(
-                      color: _emeraldGreen,
-                      fontSize: 36.0,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 4.0),
+                    const Text(
+                      '\$3,450.20',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 36.0, // text-4xl is 36px/40px
+                        fontWeight: FontWeight.w900, // font-extrabold
+                        letterSpacing: -1.0, // tracking-tight
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16.0),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                          decoration: BoxDecoration(
+                            color: _primaryColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.trending_up,
+                                color: _primaryColor,
+                                size: 16.0,
+                              ),
+                              const SizedBox(width: 4.0),
+                              Text(
+                                '+12%',
+                                style: TextStyle(
+                                  color: _primaryColor,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16.0), // gap-4
+                        Text(
+                          'vs last month',
+                          style: TextStyle(
+                            color: _secondaryText,
+                            fontSize: 12.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 24.0),
-            // Filter Chips
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: ['All', 'Food', 'Office', 'Travel'].map((filter) {
-                  final isSelected = _selectedFilter == filter;
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: ChoiceChip(
-                      label: Text(filter),
-                      selected: isSelected,
-                      onSelected: (bool selected) {
+              const SizedBox(height: 24.0),
+
+              // Quick Actions / Filters
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: ['All', 'Food', 'Office', 'Travel'].map((filter) {
+                    final isSelected = _selectedFilter == filter;
+                    return GestureDetector(
+                      onTap: () {
                         setState(() {
                           _selectedFilter = filter;
                         });
                       },
-                      selectedColor: _emeraldGreen,
-                      backgroundColor: _cardColor,
-                      labelStyle: TextStyle(
-                        color: isSelected ? Colors.black : Colors.white,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: BorderSide(
-                          color: isSelected ? Colors.transparent : Colors.white10,
+                      child: Container(
+                        height: 36.0, // h-9
+                        margin: const EdgeInsets.only(right: 12.0), // gap-3
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0), // px-5
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: isSelected ? _primaryColor : _surfaceDark,
+                          borderRadius: BorderRadius.circular(999), // rounded-full
+                          border: isSelected ? null : Border.all(color: Colors.white.withOpacity(0.05)),
+                        ),
+                        child: Text(
+                          filter,
+                          style: TextStyle(
+                            color: isSelected ? _backgroundColor : _secondaryText,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            fontSize: 14.0, // text-sm
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                  }).toList(),
+                ),
               ),
-            ),
-            const SizedBox(height: 24.0),
-            // Recent Transactions Header
-            const Text(
-              'Recent Transactions',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 24.0), // space between sections
+
+              // Recent Transactions List
+              // Assuming a header is nice to have, but sticking to design structure mainly.
+              // Design ref "Recent Transactions List" section comment.
+              // But the HTML doesn't show a header text, just the list item.
+              // I will not add a header text to stick to the visual HTML reference unless implied.
+              // However, the previous code had it. The prompt says "translate the following HTML...".
+              // I will leave out the header "Recent Transactions" text to be safe with "exact design spec".
+              // But I will add a few items to show the list.
+
+              Column(
+                children: [
+                  _buildTransactionItem('Office Depot', 'Office Supplies • Today, 10:23 AM', '-\$124.50'),
+                  const SizedBox(height: 8.0), // gap-2
+                  _buildTransactionItem('Starbucks', 'Food • Today, 08:45 AM', '-\$5.50'),
+                  const SizedBox(height: 8.0),
+                  _buildTransactionItem('Uber', 'Travel • Yesterday, 6:30 PM', '-\$12.25'),
+                ],
               ),
-            ),
-            const SizedBox(height: 16.0),
-            // Transactions List
-            _buildTransactionItem('Starbucks', 'Today, 9:41 AM', '-\$5.50', _cardColor),
-            _buildTransactionItem('Uber', 'Yesterday, 6:30 PM', '-\$12.25', _cardColor),
-            _buildTransactionItem('Grocery Store', 'Oct 24, 2:15 PM', '-\$64.90', _cardColor),
-            _buildTransactionItem('Amazon', 'Oct 23, 10:00 AM', '-\$29.99', _cardColor),
-            _buildTransactionItem('Netflix', 'Oct 20, 9:00 AM', '-\$15.99', _cardColor),
-          ],
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: _backgroundColor,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: _emeraldGreen,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: _primaryColor,
+        unselectedItemColor: Colors.grey, // Standard unselected color
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -167,41 +202,70 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildTransactionItem(String title, String subtitle, String amount, Color cardColor) {
+  Widget _buildTransactionItem(String title, String subtitle, String amount) {
+    // HTML: bg-surface-dark/50 hover:bg-surface-dark p-3 rounded-xl transition-all border border-transparent hover:border-white/5 cursor-pointer
     return Container(
-      margin: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.all(12.0), // p-3
       decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(16.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            offset: const Offset(0, 4),
-            blurRadius: 8,
+        color: _surfaceDark.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(12.0), // rounded-xl
+        border: Border.all(color: Colors.transparent), // Placeholder for border structure
+      ),
+      child: Row(
+        children: [
+          // Icon Container
+          Container(
+            width: 48.0, // size-12 (3rem = 48px)
+            height: 48.0,
+            decoration: BoxDecoration(
+              color: _surfaceDark,
+              borderRadius: BorderRadius.circular(12.0), // rounded-xl
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.store, // material symbol 'store'
+              color: _primaryColor,
+              size: 24.0,
+            ),
+          ),
+          const SizedBox(width: 16.0), // gap-4
+
+          // Text Content
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0, // text-base
+                    fontWeight: FontWeight.w600, // font-semibold
+                  ),
+                  overflow: TextOverflow.ellipsis, // truncate
+                ),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    color: _secondaryText,
+                    fontSize: 12.0, // text-xs
+                  ),
+                  overflow: TextOverflow.ellipsis, // truncate
+                ),
+              ],
+            ),
+          ),
+
+          // Amount
+          Text(
+            amount,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16.0, // text-base
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
-      ),
-      child: ListTile(
-        leading: const CircleAvatar(
-          backgroundColor: Colors.white10,
-          child: Icon(Icons.receipt, color: Colors.white70),
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: const TextStyle(color: Colors.grey),
-        ),
-        trailing: Text(
-          amount,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 16.0,
-          ),
-        ),
       ),
     );
   }
